@@ -5,6 +5,7 @@ from flask import Flask, flash, redirect, render_template, request, \
 
 from functools import wraps
 from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import IntegrityError
 from forms import AddTask, RegisterForm, LoginForm
 
 app = Flask(__name__)
@@ -26,6 +27,7 @@ def login_required(test):
 @app.route('/logout/')
 def logout():
     session.pop('logged_in',None)
+    session.pop('user_id', None)
     flash('You are logged out.  Bye. :(')
     return redirect(url_for('login'))
     
@@ -39,6 +41,7 @@ def login():
             error = 'Invalid username or password.'
         else:
             session['logged_in'] = True
+            session['user_id'] = u.id
             flash('You are logged in.  Go crazy.')
             return redirect(url_for('tasks'))
     return render_template('login.html',
@@ -64,11 +67,13 @@ def new_task():
             form.priority.data,
             form.posted_date.data,
             '1',
-            '1'
+            session['user_id']
             )
         db.session.add(new_task)
         db.session.commit()
         flash("New entry was successfuly posted.  Thank you.")
+    else:
+        flash_errors(form)
     return redirect(url_for('tasks'))
     
 # mark tasks as complete
@@ -102,8 +107,36 @@ def register():
             form.email.data,
             form.password.data,
             )
-        db.session.add(new_user)
-        db.session.commit()
-        flash('Thanks for registering. Please login.')
-        return redirect(url_for('login'))
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            flash('Thanks for registering. Please login.')
+            return redirect(url_for('login'))
+        except IntegrityError:
+            error = "User and/or email already exists."
+            return render_template('register.html', form=form, error=error)
+    else:
+        flash_errors(form)
     return render_template('register.html', form=form, error=error)
+
+def flash_errors(form):
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(u'Error in the %s field - %s' % (
+                getattr(form, field).label.text, error), 'error')
+ 
+# ----- ERROR HANDLERS ----- #            
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return render_template('500.html'), 500
+    
+@app.errorhandler(404)
+def internal_error(error):
+    return render_template('404.html'), 404
+    
+@app.errorhandler(402)
+def internal_error(error):
+    return render_template('403.html'), 404
+    
+
