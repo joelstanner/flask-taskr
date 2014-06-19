@@ -38,4 +38,5 @@ def internal_error(error):
 
 @app.route('/', defaults={'page': 'index'})
 def index(page):
-    return (redirect(url_for('tasks.tasks')))
+    return (redirect(url_for('users.login')))
+

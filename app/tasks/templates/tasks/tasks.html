@@ -1,60 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <Title>Welcome to FlaskTaskr</Title>
-        <!-- STYLES -->
-        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="{{ url_for('static', filename="css/styles.css") }}">
-    </head>
-    <body>
-        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle Navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="/">FlaskTaskr</a>
-                </div>
-                <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                        {% if not session.logged_in %}
-                            <li><a href="{{url_for('users.register')}}">Signup</a></li>
-                        {% else %}
-                            <li><a href="{{url_for('users.login')}}">Logout</a></li>
-                        {% endif %}
-                    </ul>
-                </div><!-- /.navbar-collapse-->
-            </div>
-        </div>
-        <div class="container">
-            <div class="content">
-                {% for message in get_flashed_messages() %}
-                    <div class="flash">{{ message }}</div>
-                    <br/>
-                {% endfor %}
-                {% if error %}
-                    <div class="error"><strong>Error:</strong>{{ error }}</div>
-                {% endif %}
-                {% block content %}
-                {% endblock %}
-            </div>
-            <div class="footer">
-                <hr>
-                <p>&copy; 20-something</p>
-            </div>
-        </div><!--/.container-->
-        <!-- Scripts -->
-        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    </body>
-</html>
-
-
+{% extends "template.html" %}
+{% block content %}
+<h1>Welcome to FlaskTaskr</h1>
+<div class="add-task">
+    <div class="lead">Add a new task:</div>
+        <form action="{{ url_for('tasks.new_task') }}" method="post" role="form">
+            <p>
+                {{ form.name.label }}: {{ form.name }}<br>
+                {{ form.due_date.label }}: {{form.due_date }}<br>
+                {{ form.posted_date.label }}: {{ form.posted_date }}&nbsp;{{ form.priority.label }}: {{ form.priority }}
+                <button class="btn btn-md btn-primary" type="submit">Submit</button></p>
+        </form>
+</div>
+<div class="entries">
+    <br>
+    <br>
+    <div class="lead">Open Tasks:</div>
+    <br>
+    <table class = "table table-bordered">
+        <thead>
+            <tr>
+                <th>Task Name</th>
+                <th>Due Date</th>
+                <th>Posted Date</th>
+                <th>Priority</th>
+                <th>Posted By</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for o in open_tasks %}
+                <tr>
+                    <td>{{ o.name }}</td>
+                    <td>{{ o.due_date }}</td>
+                    <td>{{ o.posted_date }}</td>
+                    <td>{{ o.priority }}</td>
+                    <td>{{ o.poster.name }}</td>
+                    <td>
+                        <a href="{{ url_for('tasks.delete_entry', task_id = o.task_id) }}">Delete</a> -
+                        <a href="{{ url_for('tasks.complete', task_id = o.task_id) }}">Mark as complete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<br>
+<br>
+<div class="entries">
+    <div class="lead">Closed Tasks:</div>
+    <br>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Task Name</th>
+                <th>Due Date</th>
+                <th>Posted Date</th>
+                <th>Priority</th>
+                <th>Posted By</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in closed_tasks %}
+                <tr>
+                    <td>{{ c.name }}</td>
+                    <td>{{ c.due_date }}</td>
+                    <td>{{ c.posted_date }}</td>
+                    <td>{{ c.priority }}</td>
+                    <td>{{ c.poster.name }}</td>
+                    <td>
+                        <a href="{{ url_for('tasks.delete_entry', task_id = c.task_id) }}">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
