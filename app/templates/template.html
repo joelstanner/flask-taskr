@@ -28,7 +28,7 @@
                         {% if not session.logged_in %}
                             <li><a href="{{url_for('users.register')}}">Signup</a></li>
                         {% else %}
-                            <li><a href="{{url_for('users.login')}}">Logout</a></li>
+                            <li><a href="{{url_for('users.logout')}}">Logout</a></li>
                         {% endif %}
                     </ul>
                 </div><!-- /.navbar-collapse-->

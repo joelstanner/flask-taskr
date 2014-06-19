@@ -7,7 +7,8 @@ from forms import RegisterForm, LoginForm
 from app.models import User
 from sqlalchemy.exc import IntegrityError
 
-mod = Blueprint('users', __name__, url_prefix='/users', template_folder='templates', static_folder='static')
+mod = Blueprint('users', __name__, url_prefix='/users',
+                template_folder='templates', static_folder='static')
 
 #logout
 @mod.route('/logout/')
@@ -30,7 +31,7 @@ def login():
             session['logged_in'] = True
             session['user_id'] = u.id
             flash('You are logged in.  Go crazy.')
-            return redirect(url_for('tasks.tasks'))# why not '.tasks'? - because this is the "users" blueprint
+            return redirect(url_for('tasks.tasks'))
         
     return render_template('users/login.html',
                            form = LoginForm(request.form),
