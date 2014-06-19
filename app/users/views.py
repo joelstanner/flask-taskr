@@ -37,7 +37,7 @@ def login():
                            error=error)
 
 # register
-@app.route('/register/', methods=['GET','POST'])
+@mod.route('/register/', methods=['GET','POST'])
 def register():
     error = None
     form = RegisterForm(request.form, csrf_enabled=False)
