@@ -15,7 +15,7 @@ def logout():
     session.pop('logged_in', None)
     session.pop('user_id', None)
     flash('You are logged out.')
-    return redirect(url_for('login'))
+    return redirect(url_for('.login'))
 
 #login  
 @mod.route('/', methods=['GET', 'POST'])
@@ -32,12 +32,12 @@ def login():
             flash('You are logged in.  Go crazy.')
             return redirect(url_for('tasks.tasks'))# why not '.tasks'? - because this is the "users" blueprint
         
-    return render_template('login.html',
+    return render_template('users/login.html',
                            form = LoginForm(request.form),
                            error=error)
 
 # register
-@app.route('/register/', methods=['GET','POST'])
+@mod.route('/register/', methods=['GET','POST'])
 def register():
     error = None
     form = RegisterForm(request.form, csrf_enabled=False)

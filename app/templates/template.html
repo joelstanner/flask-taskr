@@ -6,8 +6,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="">
-        <title>Welcome to FlaskTaskr!!</title>
-        <!-- Styles -->
+        <Title>Welcome to FlaskTaskr</Title>
+        <!-- STYLES -->
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="{{ url_for('static', filename="css/styles.css") }}">
     </head>
@@ -26,9 +26,9 @@
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
                         {% if not session.logged_in %}
-                            <li><a href="/register">Signup</a></li>
+                            <li><a href="{{url_for('users.register')}}">Signup</a></li>
                         {% else %}
-                            <li><a href="/logout">Logout</a></li>
+                            <li><a href="{{url_for('users.login')}}">Logout</a></li>
                         {% endif %}
                     </ul>
                 </div><!-- /.navbar-collapse-->

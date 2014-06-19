@@ -52,7 +52,7 @@ def complete(task_id):
     return redirect(url_for('.tasks'))
 
 # delete tasks
-@app.route('/delete/<int:task_id>/',)
+@mod.route('/delete/<int:task_id>/',)
 @login_required
 def delete_entry(task_id):
     new_id = task_id
