@@ -78,7 +78,7 @@ class Users(unittest.TestCase):
     def test_user_registration(self):
         self.app.get('users/register/', follow_redirects=True)
         response = self.register()
-        assert 'Thanks for registering. Please login.'
+        assert 'Thanks for registering. Please login.' in response.data
         
     def test_user_registration_error(self):
         self.app.get('users/register/', follow_redirects=True)
